@@ -32,7 +32,6 @@ public class CSVParserReader implements Readable {
         return file.exists();
     }
 
-    @Override
     public ArrayList<String> getAllData() {
         return data;
     }
