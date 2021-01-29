@@ -8,7 +8,7 @@ import java.util.ArrayList;
 @Builder
 public class CSVParserReader implements Readable {
     private final String inputFilename;
-    private ArrayList<String> data;
+    private final ArrayList<String> data = new ArrayList<>();
 
     @Override
     public void readAll() throws IOException {
@@ -17,8 +17,6 @@ public class CSVParserReader implements Readable {
         }
 
         BufferedReader reader = new BufferedReader(new FileReader(inputFilename));
-
-        data = new ArrayList<>();
 
         String token;
         while ((token = reader.readLine()) != null) {
