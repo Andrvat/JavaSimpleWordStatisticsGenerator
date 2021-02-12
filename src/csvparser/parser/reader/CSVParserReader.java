@@ -25,6 +25,11 @@ public class CSVParserReader implements Readable {
         reader.close();
     }
 
+    @Override
+    public void readNextWord() {
+
+    }
+
     private boolean isFileAvailable(String filename) {
         File file = new File(filename);
         return file.exists();
