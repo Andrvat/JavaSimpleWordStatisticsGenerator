@@ -1,32 +1,27 @@
 package csvparser.parser.statistics.generator;
 
+import csvparser.parser.reader.CSVParserReader;
 import lombok.Builder;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Builder
 public class CSVStatisticsGenerator {
-    private final ArrayList<String> dataFromReader;
+    private final CSVParserReader parserReader;
+    private Integer wordsNumber;
 
-    public Map<String, Integer> generateWordFrequenciesStatistics() {
+    public Map<String, Integer> generateWordFrequenciesStatistics() throws IOException {
         Map<String, Integer> statistics = new LinkedHashMap<>();
-        ArrayList<String> allWords = getAllWords();
-        for (String word : allWords) {
-            statistics.put(word, calculateCurrentWordAbsoluteFrequency(statistics, word));
+        String currentWord = parserReader.readNextWord();
+        while (currentWord != null) {
+            wordsNumber++;
+            statistics.put(currentWord, calculateCurrentWordAbsoluteFrequency(statistics, currentWord));
+            currentWord = parserReader.readNextWord();
         }
 
         return getSortedStatisticsMapByValue(statistics);
-    }
-
-    private ArrayList<String> getAllWords() {
-        ArrayList<String> allWords = new ArrayList<>();
-        for (String dataLine : dataFromReader) {
-            String[] allWordsInLine = dataLine.split(" ");
-            allWords.addAll(Arrays.asList(allWordsInLine));
-        }
-
-        return allWords;
     }
 
     private Integer calculateCurrentWordAbsoluteFrequency(Map<String, Integer> statistics, String word) {
@@ -45,6 +40,6 @@ public class CSVStatisticsGenerator {
     }
 
     public Integer getWordsNumber() {
-        return getAllWords().size();
+        return wordsNumber;
     }
 }

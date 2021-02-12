@@ -3,39 +3,26 @@ package csvparser.parser.reader;
 import lombok.Builder;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 @Builder
 public class CSVParserReader implements Readable {
-    private final String inputFilename;
-    private final ArrayList<String> data = new ArrayList<>();
+    private final BufferedReader reader;
+    private final Queue<String> readerWordQueue;
 
     @Override
-    public void readAll() throws IOException {
-        if (!isFileAvailable(inputFilename)) {
-            throw new FileNotFoundException("CSV Parser Reader: file doesn't available");
+    public String readNextWord() throws IOException {
+        if (readerWordQueue.isEmpty()) {
+            String nextLine = reader.readLine();
+            if (nextLine == null) {
+                reader.close();
+                return null;
+            }
+            String[] allWordsInLine = nextLine.split(" ");
+            readerWordQueue.addAll(Arrays.asList(allWordsInLine));
         }
-
-        BufferedReader reader = new BufferedReader(new FileReader(inputFilename));
-
-        String token;
-        while ((token = reader.readLine()) != null) {
-            data.add(token);
-        }
-        reader.close();
-    }
-
-    @Override
-    public void readNextWord() {
-
-    }
-
-    private boolean isFileAvailable(String filename) {
-        File file = new File(filename);
-        return file.exists();
-    }
-
-    public ArrayList<String> getAllData() {
-        return data;
+        return readerWordQueue.remove();
     }
 }
